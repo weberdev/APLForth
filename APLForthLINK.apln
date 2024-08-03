@@ -68,8 +68,7 @@
     OR←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insufficient stack' ⋄ elements < 2: 0 ⋄ first ← numPop'' ⋄ second ← numPop'' ⋄ higher ← first⌈second ⋄ largerBinary ← ≢binary higher ⋄ first ←  largerBinary⍴2 ⊥ first ⋄ second ←  largerBinary⍴2 ⊥ second ⋄ result ← first ∨ second ⋄ PUSH result}
     XOR←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insufficient stack' ⋄ elements < 2: 0 ⋄ first ← numPop'' ⋄ second ← numPop'' ⋄ higher ← first⌈second ⋄ largerBinary ← ≢binary higher ⋄ first ←  largerBinary⍴2 ⊥ first ⋄ second ←  largerBinary⍴2 ⊥ second ⋄ result ← first ∨ second ⋄ PUSH result}
     INVERT←{(≢global.stack)<1: (errorMessage 'error: empty') ⋄ global.stack[1]←¯1+2|global.stack[1]}
-
-⍝END FIRST CUT HERE
+                   
 
 ⍝Let's set up the loop for FORTH processing.
 ⍝“He never spoke save in the debased patois of his environment...”
