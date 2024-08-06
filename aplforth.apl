@@ -45,7 +45,9 @@ DROP←{elements ←≢global.stack ⋄ elements < 1: errorMessage 'error: insuf
 DUMP←{⎕←'[',⍕¨global.stack ']' }
 OVER←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insufficient stack' ⋄ elements < 2: 0 ⋄ first ← POP'' ⋄ second ← POP'' ⋄ garbageHolder ← PUSH second ⋄ garbageHolder ← PUSH first ⋄ PUSH second}
 DOT←{elements ←≢global.stack ⋄ elements < 1: errorMessage 'error: insufficient stack' ⋄ elements < 1: 0 ⋄ numRep ← POP'' ⋄ ⎕← numRep }
-EMIT←{elements ←≢global.stack ⋄ elements < 1: errorMessage 'error: insufficient stack' ⋄ elements < 1: 0 ⋄ charRep ← POP'' ⋄ charRep ← ⎕UCS charRep ⋄ ⎕← charRep }
+EMIT←{ elements ←≢global.stack ⋄ elements < 1: errorMessage 'error: insufficient stack' ⋄ elements < 1: 0 ⋄  charRep ← numPop'' ⋄ charRep ← ⎕UCS charRep ⋄⎕← charRep}
+
+
 CR←{⎕←''}
 
 ⍝Basic comparison operators.

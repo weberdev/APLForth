@@ -1,4 +1,3 @@
-:Namespace APLForf
 ⍝FORTH in APL
 
 ⍝We begin with a quote:
@@ -133,12 +132,7 @@
           PUSH second
           }
 
-    DOT←{elements ←≢global.stack 
-         elements < 1: errorMessage 'error: insufficient stack' 
-         elements < 1: 0 
-         numRep ← POP'' 
-         ⎕← numRep 
-         }       
+DOT←{elements ←≢global.stack ⋄ elements < 1: errorMessage 'error: insufficient stack' ⋄ elements < 1: 0 ⋄ numRep ← POP'' ⋄ ⎕← numRep }     
 
     EMIT←{elements ←≢global.stack 
           elements < 1: errorMessage 'error: insufficient stack' 
@@ -347,4 +341,3 @@
                             wordArray ← ' ' (≠⊆⊢)  wordString  
                             processWords wordArray
                            }
-:EndNamespace
