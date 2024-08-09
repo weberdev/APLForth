@@ -11,8 +11,8 @@
 global ← ⎕NS''
 global.stack←⍬
 global.stackTop ← 0 
-global.dictionaryOfWords ← 'MOD' 'DUP' 'SWAP' 'DUMP' 'DROP' 'OVER' 'EMIT' 'CR' 'AND' 'OR' 'XOR' 'INVERT'
-dictionaryOfOps ← '+' '*' '-' '/' '.' '<' '>' '=' ':' '."' '".'
+global.dictionaryOfWords ← 'MOD' 'DUP' 'SWAP' 'DUMP' 'DROP' 'OVER' 'EMIT' 'CR' 'AND' 'OR' 'XOR' 'INVERT' '."' '".'
+dictionaryOfOps ← '+' '*' '-' '/' '.' '<' '>' '=' ':' 
 
 PUSH←{global.stringHolder←''⋄global.stack,←⊂⍵}
 
@@ -79,7 +79,7 @@ toUpper ←{1∘⎕C⍵} ⍝Thanks APLcart!
 checkIfNumber ←{drType ←⍵ ⋄ drType ←⎕DR drType ⋄  drType = 83: 1 ⋄ drType = 163: 1 ⋄ drType = 323: 1 ⋄ drType = 1287: 1 ⋄ drType = 645: 1 ⋄ drType = 11 ⋄  0}
 
 checkIfWord ← {wordBeingChecked ← toUpper ⍵ ⋄ processedWBC ← ⊂wordBeingChecked  ⋄ comparatorList ← processedWBC ∊ global.dictionaryOfWords   ⋄ ∧/comparatorList}
-checkIfOperator ← {comparatorList ← ⍵ ∊ dictionaryOfOps ⋄ ∧/comparatorList}
+checkIfOperator ← {⍵ ∊ dictionaryOfOps}
 handleWord ←{processedWord ← toUpper⍵ ⋄  callWord processedWord}
 callWord ← {0=⍴⍴(⍎⍵) ⍴ 0}
 	
@@ -89,8 +89,10 @@ getTokenType ←{ isAWord ← checkIfWord ⍵ ⋄ isAWord=1:2 ⋄ isAnOp← chec
 
 concludeDefinition ←{global.workingWith ← 0 ⋄  global.stringHolder ← global.stringHolder,' 0}' ⋄ ⎕← global.stringHolder ⋄ the ← callWord global.stringHolder ⋄ global.stringHolder ← ''}
 
-concludeString ←{global.workingWith ← 0 ⋄ PUSH global.stringHolder⋄ 0}
-concatString ←{global.workingWith ← 1 ⋄ global.stringHolder ← global.stringHolder,' ',⍵ ⋄ checkIsCloser global.stringHolder: concludeString global.stringHolder ⋄ 0}
+concludeString ←{global.workingWith ← 0 ⋄ PUSH global.stringHolder ⋄ global.stringHolder ← ''  ⍝ Clear the string holder after pushing}
+
+concatString ←{global.stringHolder ← global.stringHolder,' ',⍵ ⋄ checkIsCloser global.stringHolder: concludeString ''}
+
 
 initializeNewFunc ←{funcName ← toUpper ⍵ ⋄ global.stringHolder ← funcName,' ←{' ⋄ global.dictionaryOfWords ← global.dictionaryOfWords,' 'funcName} 
 
