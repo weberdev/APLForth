@@ -81,9 +81,11 @@ checkIfOperator ← {⍵ ∊ dictionaryOfOps}
 handleWord ←{processedWord ← toUpper⍵ ⋄  callWord processedWord}
 callWord ← {0=⍴⍴(⍎⍵) ⍴ 0}
 	
+checkIsOpener ← { ⍵ = '."' }
+checkIsCloser ← { ⍵ = '".' }
 
 callOperator ← {⍵='+': PLUS'' ⋄ ⍵='-': MINUS'' ⋄ ⍵='*': MULT'' ⋄ ⍵='/': DIV'' ⋄ ⍵='=': EQUALS'' ⋄ ⍵='>': LESS'' ⋄ ⍵='<': GREATER'' ⋄ ⍵='.': DOT''⋄  ⍵='".': concludeString'' ⋄ ⍵='."': global.workingWith ← 1 ⋄  ⍵=':': global.workingWith ← 2 ⋄ 0}
-getTokenType ←{isAnOpener ← ⍵ = '."' ⋄ isAnOpener = 1: 1 ⋄ isAWord ← checkIfWord ⍵ ⋄  isAWord=1:2 ⋄ isAnOp← checkIfOperator ⍵ ⋄ isAnOp=1: 3 ⋄  checkIfNumber ⍵ = 1: 4 ⋄ ⊃⍵=':': 5 ⋄ -1}
+getTokenType ←{isAnOpener ← checkIsOpener ⍵ ⋄ isAnOpener=: 1 ⋄ isAWord ← checkIfWord ⍵ ⋄  isAWord=1:2 ⋄ isAnOp← checkIfOperator ⍵ ⋄ isAnOp=1: 3 ⋄  checkIfNumber ⍵ = 1: 4 ⋄ ⊃⍵=':': 5 ⋄ -1}
 
 concludeDefinition ←{global.workingWith ← 0 ⋄  global.stringHolder ← global.stringHolder,' 0}' ⋄ ⎕← global.stringHolder ⋄ the ← callWord global.stringHolder ⋄ global.stringHolder ← ''}
 
@@ -99,7 +101,7 @@ concatFunction ←{⊃⍵=';': concludeDefinition 'a' ⋄ beginning ← global.s
 errorMessage ←{⎕←⍵ ⋄ ⎕STOP}
 
 ⍝This is going to get confusing, is inelegant, and I'm not thrilled about it. However, it's a decent mockup for a first revision.
-⍝tokenTypes are broken down as follows: 1 = string opener. 2 = FORTH word. 3 = FORTH operator. 4 = number. 
+⍝tokenTypes are broken down as follows: 1 = string opener. 2 = FORTH word. 3 = FORTH operator. 4 = number. ⍺
 ⍝The commented out version has a debug statement that prints the name and type of the input token.
 
 handleToken ←{ tokenType ← getTokenType ⍵  ⋄ debug ← tokenType displayToken ⍵ ⋄ tokenType = 1: global.workingWith = 1 ⋄ tokenType = 2: handleWord ⍵⋄ tokenType = 3: callOperator ⍵ ⋄ tokenType = 5: global.workingWith ← 2  ⋄ tokenType = 4: PUSH ⍵  ⋄ tokenType = -1: errorMessage 'error, invalid token'}
