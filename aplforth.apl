@@ -11,7 +11,7 @@
 global ← ⎕NS''
 global.stack←⍬
 global.stackTop ← 0 
-global.dictionaryOfWords ← 'MOD' 'DUP' 'SWAP' 'DUMP' 'DROP' 'OVER' 'EMIT' 'CR' 'AND' 'OR' 'XOR' 'INVERT' '."' '".'
+global.dictionaryOfWords ← 'MOD' 'DUP' 'SWAP' 'DUMP' 'DROP' 'OVER' 'EMIT' 'CR' 'AND' 'OR' 'XOR' 'INVERT'
 dictionaryOfOps ← '+' '*' '-' '/' '.' '<' '>' '=' ':' 
 
 PUSH←{global.stringHolder←''⋄global.stack,←⊂⍵}
@@ -39,7 +39,7 @@ MOD←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insuff
 ⍝Following that, we continue to the more FORTHian operators:
 ⍝"Non- Euclidean calculus and quantum physics are enough to stretch any brain; and when one mixes them with folklore, and tries to trace a strange background of multi-dimensional reality behind the ghoulish hints of Gothic tales and the wild whispers of the chimney-corner, one can hardly expect to be wholly free from mental tension."
 ⍝-HP Lovecraft, Dreams in the Witch House
-DUP←{elements ←≢global.stack ⋄ elements<1: errorMessage 'error: empty stack' ⋄ elements<1: 0 ⋄ duplicateValue ← POP'' ⋄ holder ← PUSH duplicateValue ⋄ PUSH duplicateValue}
+DUP←{elements ←≢global.stack ⋄ elements<1: errorMessage 'error: empty stack' ⋄ elements<1: 0 ⋄ duplicateValue ← POP'' ⋄ holder ← PUSH duplicateV⌈alue ⋄ PUSH duplicateValue}
 SWAP←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insufficient stack' ⋄ elements < 2: 0 ⋄ first ← POP'' ⋄ second ← POP'' ⋄ garbageHolder ← PUSH first ⋄ PUSH second}
 DROP←{elements ←≢global.stack ⋄ elements < 1: errorMessage 'error: insufficient stack' ⋄ elements < 1: 0 ⋄ POP''} 
 DUMP←{⎕←'[',⍕¨global.stack ']' }
@@ -67,9 +67,7 @@ AND←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insuff
 OR←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insufficient stack' ⋄ elements < 2: 0 ⋄ first ← numPop'' ⋄ second ← numPop'' ⋄ higher ← first⌈second ⋄ largerBinary ← ≢binary higher ⋄ first ←  largerBinary⍴2 ⊥ first ⋄ second ←  largerBinary⍴2 ⊥ second ⋄ result ← first ∨ second ⋄ PUSH result}
 XOR←{elements ←≢global.stack ⋄ elements < 2: errorMessage 'error: insufficient stack' ⋄ elements < 2: 0 ⋄ first ← numPop'' ⋄ second ← numPop'' ⋄ higher ← first⌈second ⋄ largerBinary ← ≢binary higher ⋄ first ←  largerBinary⍴2 ⊥ first ⋄ second ←  largerBinary⍴2 ⊥ second ⋄ result ← first ∨ second ⋄ PUSH result}
 INVERT←{(≢global.stack)<1: (errorMessage 'error: empty') ⋄ global.stack[1]←¯1+2|global.stack[1]}
-
-⍝END FIRST CUT HERE
-
+⌈
 ⍝Let's set up the loop for FORTH processing.
 ⍝“He never spoke save in the debased patois of his environment...”
 ⍝-HP Lovecraft, Beyond the Wall of Sleep
@@ -85,13 +83,13 @@ callWord ← {0=⍴⍴(⍎⍵) ⍴ 0}
 	
 
 callOperator ← {⍵='+': PLUS'' ⋄ ⍵='-': MINUS'' ⋄ ⍵='*': MULT'' ⋄ ⍵='/': DIV'' ⋄ ⍵='=': EQUALS'' ⋄ ⍵='>': LESS'' ⋄ ⍵='<': GREATER'' ⋄ ⍵='.': DOT''⋄  ⍵='".': concludeString'' ⋄ ⍵='."': global.workingWith ← 1 ⋄  ⍵=':': global.workingWith ← 2 ⋄ 0}
-getTokenType ←{ isAWord ← checkIfWord ⍵ ⋄ isAWord=1:2 ⋄ isAnOp← checkIfOperator ⍵ ⋄ isAnOp=1: 3 ⋄  checkIfNumber ⍵ = 1: 4 ⋄ ⊃⍵=':': 5 ⋄ -1}
+getTokenType ←{isAnOpener ← ⍵ = '."' ⋄ isAnOpener = 1: 1 ⋄ isAWord ← checkIfWord ⍵ ⋄  isAWord=1:2 ⋄ isAnOp← checkIfOperator ⍵ ⋄ isAnOp=1: 3 ⋄  checkIfNumber ⍵ = 1: 4 ⋄ ⊃⍵=':': 5 ⋄ -1}
 
 concludeDefinition ←{global.workingWith ← 0 ⋄  global.stringHolder ← global.stringHolder,' 0}' ⋄ ⎕← global.stringHolder ⋄ the ← callWord global.stringHolder ⋄ global.stringHolder ← ''}
 
-concludeString ←{global.workingWith ← 0 ⋄ PUSH global.stringHolder ⋄ global.stringHolder ← ''  ⍝ Clear the string holder after pushing}
+concludeString ←{global.workingWith ← 0 ⋄ PUSH global.stringHolder ⋄ global.stringHolder ← ''}
 
-concatString ←{global.stringHolder ← global.stringHolder,' ',⍵ ⋄ checkIsCloser global.stringHolder: concludeString ''}
+concatString ←{global.stringHolder ← global.stringHolder,' ',⍵ ⋄ global.stringHolder[1] = ' ': global.stringHolder ← 1↓global.stringHolder ⋄  (⍵ = '".'): concludeString ''}
 
 
 initializeNewFunc ←{funcName ← toUpper ⍵ ⋄ global.stringHolder ← funcName,' ←{' ⋄ global.dictionaryOfWords ← global.dictionaryOfWords,' 'funcName} 
@@ -104,13 +102,14 @@ errorMessage ←{⎕←⍵ ⋄ ⎕STOP}
 ⍝tokenTypes are broken down as follows: 1 = string opener. 2 = FORTH word. 3 = FORTH operator. 4 = number. 
 ⍝The commented out version has a debug statement that prints the name and type of the input token.
 
-handleToken ←{ tokenType ← getTokenType ⍵  ⋄ debug ← tokenType displayToken ⍵ ⋄ tokenType = 1: concatString ⍵ ⋄ tokenType = 2: handleWord ⍵⋄ tokenType = 3: callOperator ⍵ ⋄ tokenType = 5: global.workingWith ← 2  ⋄ tokenType = 4: PUSH ⍵  ⋄ tokenType = -1: errorMessage 'error, invalid token'}
+handleToken ←{ tokenType ← getTokenType ⍵  ⋄ debug ← tokenType displayToken ⍵ ⋄ tokenType = 1: global.workingWith = 1 ⋄ tokenType = 2: handleWord ⍵⋄ tokenType = 3: callOperator ⍵ ⋄ tokenType = 5: global.workingWith ← 2  ⋄ tokenType = 4: PUSH ⍵  ⋄ tokenType = -1: errorMessage 'error, invalid token'}
 
 ⍝handleToken ←{ tokenType ← getTokenType ⍵   ⋄ tokenType = 1: concatString ⍵ ⋄ tokenType = 2: handleWord ⍵⋄ tokenType = 3: callOperator ⍵ ⋄ tokenType = 5: global.workingWith ← 2  ⋄ tokenType = 4: PUSH ⍵  ⋄ tokenType = -1: errorMessage 'error, invalid token'}
 
 displayToken ←{⎕←'handling ',⍵,' which is a ',⍺ }
 
-prehandlingStringCheck ←{ global.workingWith = 1: concatString ⍵ ⋄ global.workingWith = 2: concatFunction ⍵ ⋄ global.workingWith = 0: handleToken ⍵ ⋄ 0}
+prehandlingStringCheck ←{ global.workingWith = 1: concatString ⍵ ⋄ global.workingWith = 2: concatFunction ⍵ ⋄  global.workingWith = 0: handleToken ⍵ }
+
 
 processWords ←{thisIsADishonorableWorkaround←prehandlingStringCheck¨⍵ ⋄ ⎕← 'ok' ⋄ interpreterLoopStart''}
 interpreterLoopStart ← {wordString ← ⍞ ⋄ wordArray ← ' ' (≠⊆⊢)  wordString  ⋄ processWords wordArray}
