@@ -107,6 +107,7 @@ errorMessage ←{⎕←⍵ ⋄ ⎕STOP}
 
 ⍝TODO: Fix boolean singleton issue.
 ⍝TODO: I think this means ^/ ing it to get a full 1 or 0 on one axis.
+⍝TODO: Maybe work on this at some point and not jam comments into my git commit history.
 handleToken ←{ tokenType ← getTokenType ⍵  ⋄ debug ← tokenType displayToken ⍵ ⋄ tokenType = 1: global.workingWith = 1 ⋄ tokenType = 2: handleWord ⍵⋄ tokenType = 3: callOperator ⍵ ⋄ tokenType = 5: global.workingWith ← 2  ⋄ tokenType = 4: PUSH ⍵  ⋄ tokenType = -1: errorMessage 'error, invalid token'}
 
 ⍝handleToken ←{ tokenType ← getTokenType ⍵   ⋄ tokenType = 1: concatString ⍵ ⋄ tokenType = 2: handleWord ⍵⋄ tokenType = 3: callOperator ⍵ ⋄ tokenType = 5: global.workingWith ← 2  ⋄ tokenType = 4: PUSH ⍵  ⋄ tokenType = -1: errorMessage 'error, invalid token'}
